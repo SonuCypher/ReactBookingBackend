@@ -5,7 +5,7 @@ const cors = require('cors')
 const postRoutes = require('./routes/posts')
 
 const app = express()
-app.use('/posts',postRoutes)
+
 
 mongoose.connect("mongodb://localhost:27017/reactStill")
 .then(()=>{console.log('database connected')})
@@ -14,6 +14,8 @@ mongoose.connect("mongodb://localhost:27017/reactStill")
 app.use(bodyParser.json({limit:"30mb", extended: true}))
 app.use(bodyParser.urlencoded({limit:"30mb", extended: true}))
 app.use(cors())
+
+app.use('/posts',postRoutes)
 
 
 app.listen(5000,()=>{

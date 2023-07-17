@@ -13,11 +13,24 @@ module.exports.getPosts = async(req,res)=>{
 
 module.exports.CreatePost = async(req,res)=>{
     const post = req.body
-    const newPost = await PostSites(post)
+    const newPost = new PostSites(post)
     try {
         await newPost.save()
         res.status(201).json(newPost);
     } catch (error) {
         res.status(409).json({ message: error.message })
     }
+}
+
+module.exports.updatePost = async(req,res)=>{
+   try {
+    const {id} = req.params
+    const post = req.body
+
+   const updatedPost = await PostSites.findByIdAndUpdate(id,post,{new:true})
+    res.json(updatedPost)
+   } catch (error) {
+    res.status(409).json({ message: error.message })
+   }
+    
 }

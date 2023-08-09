@@ -47,11 +47,12 @@ module.exports.deletePost = async (req, res) => {
 };
 
 module.exports.likePost = async(req,res)=>{
-   try{ const {id} = req.params
+   try{ 
+    const {id} = req.params
 
     const post = await PostSites.findById(id)
     if(post){
-        const updatedPost = await PostSites.findByIdAndUpdate(id,{likeCount:post.likeCount + 1},{new: true})
+        const updatedPost = await PostSites.findByIdAndUpdate(id,{likecount:post.likecount + 1},{new: true})
         res.json(updatedPost)
     }else{
         res.json({message: "No such post"})

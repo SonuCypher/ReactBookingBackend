@@ -12,7 +12,7 @@ module.exports.getPosts = async (req, res) => {
 
 module.exports.CreatePost = async (req, res) => {
   const post = req.body;
-  const newPost = new PostSites(post);
+  const newPost = new PostSites({...post,creator:req.userId,createdAt:new Date().toISOString()});
   try {
     await newPost.save();
     res.status(201).json(newPost);
@@ -50,9 +50,18 @@ module.exports.likePost = async(req,res)=>{
    try{ 
     const {id} = req.params
 
+    if(!req.userId) return res.json({message:"unauthorized"});
+
     const post = await PostSites.findById(id)
     if(post){
-        const updatedPost = await PostSites.findByIdAndUpdate(id,{likecount:post.likecount + 1},{new: true})
+      const index = post.likes.findIndex((id)=> id === String(req.userId))
+      if(index === -1){
+        post.likes.push(req.userId)
+      }else{
+        post.likes = post.likes.filter((id)=> id !== String(req.userId))
+      }
+
+        const updatedPost = await PostSites.findByIdAndUpdate(id,post,{new: true})
         res.json(updatedPost)
     }else{
         res.json({message: "No such post"})
